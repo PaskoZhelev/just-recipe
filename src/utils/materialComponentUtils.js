@@ -15,6 +15,12 @@ export const Copyright = () => {
     );
   }
 
+export const Loader = () => (
+    <svg className="svgLoader" viewBox="0 0 100 100" width="5em" height="5em" preserveAspectRatio="xMidYMin">
+      <path stroke="none" d="M10 50A40 40 0 0 0 90 50A40 42 0 0 1 10 50" fill="#51CACC" transform="rotate(179.719 50 51)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 51;360 50 51" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform></path>
+    </svg>
+); 
+
  export const materialUiStyles = makeStyles((theme) => ({
     icon: {
       marginRight: theme.spacing(2),
@@ -61,9 +67,10 @@ export const Copyright = () => {
         marginBottom: theme.spacing(3),
         padding: theme.spacing(2),
         [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-          marginTop: theme.spacing(6),
-          marginBottom: theme.spacing(6),
           padding: theme.spacing(3),
         },
       },
+      avatar: {
+        backgroundColor: theme.palette.secondary.main,
+      }
 })); 
