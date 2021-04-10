@@ -55,19 +55,33 @@ exports.handler = async event => {
     }
 
     try {
-      let jsonRecipe = JSON.parse(listObj[0]);
-      // some recipe contain @graph node
-      const graphElem = jsonRecipe['@graph'];
-      if(graphElem) {
-        for(var i in graphElem){
-          if(graphElem[i]['@type'] === 'Recipe') {
-            jsonRecipe = graphElem[i];
+      let jsonArr = [];
+      let recipeElem;
+      let graphElem;
+      for(var k in listObj) {
+        if(IsJsonString(listObj[k])) {
+          jsonArr.push(JSON.parse(listObj[k]));
+          const json = JSON.parse(listObj[k]);
+
+          if('Recipe' === json['@type']) {
+            return json;
+          }
+
+          graphElem = json['@graph'];
+          if(graphElem) {
+            for(var i in graphElem){
+              if(graphElem[i]['@type'] === 'Recipe') {
+                return graphElem[i];
+              }
+            }
+            
           }
         }
       }
-
-      return jsonRecipe;
+      
+      throw "Unable to find recipe on that page";
     } catch(e) {
+        console.log(e);
         throw defautlErrorMessage;
     }
     
@@ -81,5 +95,14 @@ exports.handler = async event => {
       throw `ERROR: An error occurred while trying to fetch the URL: ` + url;
     }
   };
+
+  const IsJsonString = (str) => {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+};
 
   

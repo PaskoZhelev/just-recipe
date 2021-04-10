@@ -55,7 +55,15 @@ export default function RecipePage() {
           recipeCategory: recipeData.recipeCategory,
           image: recipeData.image
         });
-      })
+      }).catch(
+        function (error) {
+          console.log('Unable to find recipe on that page');
+          setRecipe({
+            loading: false,
+            error: true
+          });
+        }
+      )
     }
   }, [validUrl, url]);
 
@@ -67,7 +75,7 @@ export default function RecipePage() {
       <Container>
         <Paper className={classes.paper}>
           <Grid container spacing={2} justify="center">
-            {validUrl ? 
+            {validUrl && !recipe.error ? 
               recipe.loading ? <Loader /> :
               <Grid container spacing={2}>
                 <Grid item xs={12} container>
@@ -81,10 +89,8 @@ export default function RecipePage() {
                       </Typography>
                     </Grid>
                   </Grid>
-                  <Grid item xs>
-                    <ButtonBase className={classes.image}>
-                      <img className={classes.img} alt="complex" src={recipe.image[0]} width="250em" height="250em" />
-                    </ButtonBase>
+                  <Grid item xs>  
+                      <img className={classes.img} alt="complex" src={typeof recipe.image === 'string' ? recipe.image : recipe.image[0]} width="280em" height="230em" />
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
@@ -132,7 +138,7 @@ export default function RecipePage() {
               </Grid>
             : 
             <Typography component="h1" variant="h4" align="center">
-                The Recipe URL is not Valid
+                Unable to Find Recipe on that Page
             </Typography>}
           </Grid>  
         </Paper>
