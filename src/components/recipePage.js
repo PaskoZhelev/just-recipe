@@ -9,11 +9,8 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
 import { Copyright, Loader, materialUiStyles } from '../utils/materialComponentUtils';
 import { useLocation } from 'react-router-dom'
 import axios from 'axios';
@@ -25,7 +22,7 @@ export default function RecipePage() {
   const classes = materialUiStyles();
   const url = new URLSearchParams(useLocation().search).get("url");
   const validUrl = isValidURL(url);
-  const [checked, setChecked] = React.useState([0]);
+  const [checked, setChecked] = React.useState([]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
