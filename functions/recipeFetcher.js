@@ -2,7 +2,7 @@ const cheerio = require("cheerio");
 const axios = require("axios").default;
 
 const testUrl = "https://www.inspiredtaste.net/1773/steamed-mussels-in-a-white-wine-broth/";
-const defautlErrorMessage = "An error occurred while processing the request";
+const defautlErrorMessage = "Unable to find recipe on that page";
 
 exports.handler = async event => {
     try {
@@ -55,31 +55,32 @@ exports.handler = async event => {
     }
 
     try {
-      let jsonArr = [];
-      let recipeElem;
       let graphElem;
+      let recipe = undefined;
       for(var k in listObj) {
         if(IsJsonString(listObj[k])) {
-          jsonArr.push(JSON.parse(listObj[k]));
           const json = JSON.parse(listObj[k]);
+          
+          if(json[0]) {
+            for(var i in json) {
+              recipe = findRecipe(json[i]);
 
-          if('Recipe' === json['@type']) {
-            return json;
-          }
-
-          graphElem = json['@graph'];
-          if(graphElem) {
-            for(var i in graphElem){
-              if(graphElem[i]['@type'] === 'Recipe') {
-                return graphElem[i];
+              if(recipe) {
+                console.log(recipe)
+                return recipe;
               }
             }
-            
+          }
+
+          recipe = findRecipe(json);
+
+          if(recipe) {
+            return recipe;
           }
         }
       }
       
-      throw "Unable to find recipe on that page";
+      throw defautlErrorMessage;
     } catch(e) {
         console.log(e);
         throw defautlErrorMessage;
@@ -104,5 +105,23 @@ exports.handler = async event => {
     }
     return true;
 };
+
+const findRecipe = (json) => {
+  let graphElem;
+  if('Recipe' === json['@type']) {
+    return json;
+  }
+
+  graphElem = json['@graph'];
+  if(graphElem) {
+    for(var i in graphElem){
+      if(graphElem[i]['@type'] === 'Recipe') {
+        return graphElem[i];
+      }
+    }
+  }
+
+  return undefined;
+}
 
   

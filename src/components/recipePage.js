@@ -3,7 +3,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -42,6 +41,7 @@ export default function RecipePage() {
       axios.get('/api/recipeFetcher?url=' + url)
       .then(res => {
         var recipeData = res.data;
+
         setRecipe({
           loading: false,
           name: recipeData.name,
@@ -53,7 +53,7 @@ export default function RecipePage() {
           totalTime: recipeData.totalTime,
           recipeYield: recipeData.recipeYield,
           recipeCategory: recipeData.recipeCategory,
-          image: recipeData.image
+          image: parseImage(recipeData)
         });
       }).catch(
         function (error) {
@@ -90,7 +90,7 @@ export default function RecipePage() {
                     </Grid>
                   </Grid>
                   <Grid item xs>  
-                      <img className={classes.img} alt="complex" src={typeof recipe.image === 'string' ? recipe.image : recipe.image[0]} width="280em" height="230em" />
+                      <img className={classes.img} alt="image" src={recipe.image} width="280em" height="230em" />
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
@@ -129,7 +129,7 @@ export default function RecipePage() {
                           <Avatar className={classes.avatar}>{index + 1}</Avatar>
                         </Grid>
                         <Grid item xs>
-                          <Typography>{instruction.text}</Typography>
+                          <Typography>{instruction.text ? instruction.text : instruction.name}</Typography>
                         </Grid>
                       </Grid>
                     </Paper>
@@ -162,4 +162,12 @@ function isValidURL(string) {
     '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
     return !!pattern.test(string);
 };
+
+const parseImage = (recipeData) => {
+  var recipeImage = typeof recipeData.image === 'string' ? recipeData.image : recipeData.image[0];
+  if(typeof recipeData.image[0] === 'object') {
+      recipeImage = recipeData.image[0].url;
+  }
+  return recipeImage;      
+}
 
